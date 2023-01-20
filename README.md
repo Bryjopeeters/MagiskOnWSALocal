@@ -1,34 +1,75 @@
 # Magisk on WSA (with Google Apps)
 
-## Pre-request
+:warning: For fork developers: Please don't build using GitHub Actions, as GitHub will count your forked GitHub Actions usage against this upstream repository, which may cause this upstream repository gets disabled by GitHub staff like [MagiskOnWSA](https://github.com/LSPosed/MagiskOnWSA) because of numerous forks building GitHub Actions, and counting the forks' Action usage against this upstream repository.
 
-- Ubuntu (you can use WSL2)
+## Support for generating from these systems
+
+- Linux (x86_64 or arm64)
+
+    The following dependencies are required: `setools lzip wine patchelf e2fsprogs aria2 python3 attr`
+
+    The following components need to be installed using `winetricks`: `msxml6`
+
+    The python3 library `requests` is used.
+
+    Python version ≥ 3.7.
+  - Recommended Use
+    - Ubuntu (You can use [WSL2](https://apps.microsoft.com/store/search?publisher=Canonical%20Group%20Limited))
+
+        Ready to use right out of the box.
+    - Debian (You can use [WSL2](https://apps.microsoft.com/store/detail/debian/9MSVKQC78PK6))
+
+        Need to add `contrib` sources to the source list to install winetricks.
+
+    - OpenSUSE (You can use [WSL2](https://apps.microsoft.com/store/search?publisher=SUSE))
+
+        Ready to use right out of the box.
+
+    `run.sh` will handle all dependencies automatically.
+
+    No need to type any commands.
+  - Other Distributions
+
+    Install the dependencies manually.
+
+    Use the command-line program `build.sh`.
 
 ## Features
 
-- Integrate Magisk and OpenGApps in a few clicks within minutes
+- Integrate Magisk and GApps in a few clicks within minutes
 - Keep each build up to date
 - Support both ARM64 and x64
 - Support all OpenGApps variants except for aroma (aroma does not support x86_64, please use super instead)
+- Remove Amazon Appstore
 - Fix VPN dialog not showing (use our [VpnDialogs app](https://github.com/LSPosed/VpnDialogs))
+- Add device administration feature
 - Unattended installation
 - Automatically activates developers mode in Windows 11
 - Update to the new version while preserving data with a one-click script
 - Merged all language packs
-- Support managing start menu icons (manually installing [WSAHelper](https://github.com/LSPosed/WSAHelper/releases/latest) to use this feature)
 
 ## Text Guide
 
 1. Star (if you like)
 1. Clone the repo to local
-1. Run `scripts/run.sh`
-1. Select the version of Magisk and select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like, select the root solution (none means no root), select the WSA version and its architecture (mostly x64)
-1. Wait for the script to complete and the artifact will be in the `output` folder
+   - Run `cd scripts`
+   - Then run `./build.sh --help` (optional) to get the usage if you want to use CLI.
+1. Run `./run.sh` under scripts directory.
+1. Select the WSA version and its architecture (mostly x64).
+1. Select the version of Magisk.
+1. Choose which brand of GApps you want to install
+   - OpenGApps
 
-1. Move the artifact to a place you like
-1. Right-click `Install.ps1` and select `Run with PowerShell`
+        Select the [OpenGApps variant](https://github.com/opengapps/opengapps/wiki#variants) you like.
+   - MindTheGapps
+
+       There is no other variant we can choose.
+1. Select the root solution (none means no root)
+1. If you are running the script for the first time, it will take some time to complete. After the script completes, two new folders named `output` and `download` will be generated in the `MagiskOnWSALocal` folder. Go to the `output` folder. While running the `./run.sh` script in the step 3, if you selected `Yes` for `Do you want to compress the output?` then in `output` folder you will see a compressed file called `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`or else there will be folder with the `WSA-with-magisk-stable-MindTheGapps_2207.40000.8.0_x64_Release-Nightly`. If there is a folder open it and skip to step 10. NOTE: The name of compressed file or the folder generated in the `output` folder may be different for you. It will be dependent on the choices made when executing `./run.sh`
+1. Extract the compressed file and open the folder created after the extraction of the file.
+1. Here look for file `Run.bat` and run it.
     - If you previously have a MagiskOnWSA installation, it will automatically uninstall the previous one while **preserving all user data** and install the new one, so don't worry about your data.
-    - If you have an official WSA installation, you should uninstall it first. (In case you want to preserve your data, you can backup `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx` before uninstallation and restore it after installation.) (If you want to restore the icons to the start menu, please install and use [WSAHelper](https://github.com/LSPosed/WSAHelper/releases/latest).)
+    - If you have an official WSA installation, you should uninstall it first. (In case you want to preserve your data, you can backup `%LOCALAPPDATA%\Packages\MicrosoftCorporationII.WindowsSubsystemForAndroid_8wekyb3d8bbwe\LocalCache\userdata.vhdx` before uninstallation and restore it after installation.)
     - If the popup windows disappear **without asking administrative permission** and WSA is not installed successfully, you should manually run `Install.ps1` as administrator:
         1. Press `Win+x` and select `Windows Terminal (Admin)`
         2. Input `cd "{X:\path\to\your\extracted\folder}"` and press `enter`, and remember to replace `{X:\path\to\your\extracted\folder}` including the `{}`, for example `cd "D:\wsa"`
@@ -73,12 +114,19 @@
 - How can I get rid of Magisk?
 
     Choose `none` as the root solution.
-- Github script is updated, how can I synchronize it?
+- How to install custom GApps?
 
-    1. In your fork repository, click `fetch upstream`
-        ![fetch](https://docs.github.com/assets/cb-33284/images/help/repository/fetch-upstream-drop-down.png)
-    1. Then click `fetch and merge`
-        ![merge](https://docs.github.com/assets/cb-128489/images/help/repository/fetch-and-merge-button.png)
+    [Tutorial](./Custom-GApps.md)
+- Where can I download MindTheGapps?
+
+    You can download from here [MindTheGapps](https://androidfilehost.com/?w=files&flid=322935) ([mirror](http://downloads.codefi.re/jdcteam/javelinanddart/gapps))
+
+    Note that there is no x86_64 pre-build, so you need to build it by yourself ([Repository](https://gitlab.com/MindTheGapps/vendor_gapps)).
+
+    Or you can download the built package for 12.1 and 13 for x86_64 from [this page](https://sourceforge.net/projects/wsa-mtg/files/x86_64/).
+- Can I switch OpenGApps to MindTheGapps and keep user data in a previous build?
+
+    No. You should wipe data after changing the GApps brand. Otherwise, you will find that the installed GApps are not recognized.
 
 ## Credits
 
@@ -87,3 +135,7 @@
 - [The Open GApps Project](https://opengapps.org): One of the most famous Google Apps packages solution
 - [WSA-Kernel-SU](https://github.com/LSPosed/WSA-Kernel-SU) and [kernel-assisted-superuser](https://git.zx2c4.com/kernel-assisted-superuser/): The kernel `su` for debugging Magisk Integration
 - [WSAGAScript](https://github.com/ADeltaX/WSAGAScript): The first GApps integration script for WSA
+
+_The repository is provided as a utility._
+
+_Android is a trademark of Google LLC. Windows is a trademark of Microsoft LLC._
